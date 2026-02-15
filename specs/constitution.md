@@ -1,50 +1,97 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Weather CLI Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Single Binary, Zero Config
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+The tool produces a single self-contained binary with no runtime dependencies beyond macOS system frameworks. Users should get useful output with zero arguments. Sensible defaults over configuration.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. CLI Contract
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Standard Unix conventions apply:
+- Normal output to stdout, errors to stderr
+- Exit code 0 on success, non-zero on failure
+- Flags use Go `flag` package conventions (single dash, e.g. `-city`)
+- `--no-color` disables ANSI codes for piping and redirection
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Graceful Degradation
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+When a preferred data source is unavailable, fall back silently to the next option. CoreLocation fails? Use IP geolocation. Never crash on recoverable errors. Show clear, actionable error messages when recovery is not possible.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Test Coverage
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+All packages must have unit tests. Tests must be runnable with `make test` (which calls `go test ./...`). Test files live alongside their source files following Go conventions. Focus on behavior, not implementation details.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Simplicity
+
+Prefer the standard library over third-party dependencies. Avoid premature abstraction. Three similar lines of code are better than an unnecessary helper. No feature flags, no configuration files, no plugin systems.
+
+## API and External Services
+
+### External API Usage
+- Use free, unauthenticated APIs only (Open-Meteo, ip-api.com)
+- All HTTP calls must have timeouts (30 seconds maximum)
+- Handle API errors gracefully with user-friendly messages
+- No API keys or secrets required
+
+### Data Flow
+- Location resolution: CoreLocation -> IP geolocation -> manual input
+- Weather data: Open-Meteo API only
+- Geocoding (city name to coordinates): Open-Meteo geocoding API
+
+## Code Quality
+
+### Go Standards
+- Follow standard Go conventions (`gofmt`, `go vet`)
+- Package names: short, lowercase, no underscores
+- Error handling: check all errors, wrap with context using `fmt.Errorf`
+- No `init()` functions except for unavoidable cgo setup
+
+### Project Structure
+```
+main.go              # Entry point, flag parsing, orchestration
+internal/
+  display/           # Terminal rendering, ASCII art, colors
+  i18n/              # Internationalization, language packs
+  location/          # Location detection (CoreLocation, IP geo)
+  units/             # Unit conversion (metric/imperial)
+  weather/           # Weather API client, geocoding
+```
+
+### Internationalization
+- All user-facing strings go through the `i18n` package
+- Language packs are Go source files (e.g., `lang_de.go`), not external files
+- Supported languages: en, de, es, fr, it, zh
+- English is the default; system locale detection is attempted first
+
+## Security
+
+### Input Validation
+- Validate all CLI flag values before use
+- Latitude: -90 to 90, Longitude: -180 to 180
+- Days: 1 to 7
+- City names: passed directly to geocoding API (URL-encoded by HTTP client)
+
+### Network Safety
+- HTTPS for all external API calls where supported
+- No secrets, tokens, or credentials in the binary or source
+- No user data stored to disk
+
+## Build and Release
+
+### Build System
+- `make build` produces the binary
+- `make test` runs all tests
+- `make clean` removes build artifacts
+- cgo is required (CoreLocation binding on macOS)
+
+### Platform
+- macOS only (Apple Silicon and Intel)
+- Go 1.22+ required
+- No cross-compilation support needed
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+Constitution amendments should be documented with rationale. Update when new patterns emerge or existing standards prove impractical. Keep this document aligned with actual project practices.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-02-15 | **Last Amended**: 2026-02-15
