@@ -9,7 +9,7 @@
 vendor/
 
 # Binary
-goweather
+weather
 
 # OS
 .DS_Store
