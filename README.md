@@ -2,7 +2,8 @@
 
 A minimalistic terminal weather CLI for macOS that displays current conditions and a multi-day forecast with colorful ASCII art. Supports six languages and automatic location detection via macOS CoreLocation.
 
-> **Note:** This project was created as a smoke test for exploring [SDD](https://github.com/rhuss/cc-sdd) (Spec-Driven Development) and its Claude Code plugin. It is not actively maintained and won't receive further updates.
+> [!NOTE]
+> This project was created as a smoke test for exploring [SDD](https://github.com/rhuss/cc-sdd) (Spec-Driven Development) and its Claude Code plugin. It is not actively maintained and won't receive further updates.
 
 ## Build
 
