@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"goweather/internal/display"
+	"goweather/internal/i18n"
 	"goweather/internal/location"
 	"goweather/internal/weather"
 	"os"
@@ -17,7 +18,11 @@ func main() {
 	metric := flag.Bool("metric", false, "Use metric units (Celsius, km/h) [default]")
 	noColor := flag.Bool("no-color", false, "Disable ANSI color codes in output")
 	days := flag.Int("days", 5, "Number of forecast days (1-7)")
+	lang := flag.String("lang", "", "Language (en, de, es, fr, it, zh)")
 	flag.Parse()
+
+	// Initialize i18n (before any output)
+	i18n.Init(*lang)
 
 	// metric is the default; --metric is a no-op but accepted for clarity
 	_ = metric
@@ -54,7 +59,7 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		if loc.Source == "" {
-			fmt.Fprintln(os.Stderr, "Tip: Use --city or --lat/--lon to specify a location manually")
+			fmt.Fprintln(os.Stderr, i18n.TipManualLocation())
 		}
 		os.Exit(1)
 	}

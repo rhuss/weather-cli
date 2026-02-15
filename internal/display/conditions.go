@@ -1,5 +1,7 @@
 package display
 
+import "goweather/internal/i18n"
+
 // WeatherCondition maps a WMO code to display properties.
 type WeatherCondition struct {
 	Code        int
@@ -43,6 +45,9 @@ var conditions = map[int]WeatherCondition{
 // Returns an "Unknown" condition for unrecognized codes.
 func GetCondition(code int) WeatherCondition {
 	if c, ok := conditions[code]; ok {
+		if desc := i18n.Condition(code); desc != "" {
+			c.Description = desc
+		}
 		return c
 	}
 	return WeatherCondition{code, "Unknown", "\u2753", "unknown"}
