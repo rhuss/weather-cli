@@ -42,16 +42,25 @@ One day's forecast data.
 | TemperatureMin | float64 | Daily low temperature                    |
 | WeatherCode    | int     | WMO weather interpretation code          |
 
+### WeatherData
+
+Bundles current conditions with the daily forecast.
+
+| Field    | Type             | Description                              |
+|----------|------------------|------------------------------------------|
+| Current  | CurrentWeather   | Current weather conditions snapshot      |
+| Daily    | []DailyForecast  | Array of daily forecast entries          |
+| Timezone | string           | Timezone identifier from API response    |
+
 ### WeatherCondition
 
-Static mapping from WMO code to display properties.
+Static mapping from WMO code to display properties. ASCII art is resolved by category (not stored per condition).
 
 | Field       | Type   | Description                                |
 |-------------|--------|--------------------------------------------|
 | Code        | int    | WMO weather code (0-99)                    |
 | Description | string | Human-readable condition ("Clear sky")     |
 | Emoji       | string | Emoji representation ("sun")               |
-| AsciiArt    | string | Multi-line ASCII art icon                  |
 | Category    | string | Grouping: "clear", "cloudy", "rain", "snow", "storm", "fog" |
 
 ### Config
@@ -89,12 +98,17 @@ WeatherCode → WeatherCondition lookup (static map)
 | 51   | Light drizzle        | rain     | cloud with rain |
 | 53   | Moderate drizzle     | rain     | cloud with rain |
 | 55   | Dense drizzle        | rain     | cloud with rain |
+| 56   | Light freezing drizzle | rain   | cloud with rain |
+| 57   | Dense freezing drizzle | rain   | cloud with rain |
 | 61   | Slight rain          | rain     | cloud with rain |
 | 63   | Moderate rain        | rain     | cloud with rain |
 | 65   | Heavy rain           | rain     | cloud with rain |
+| 66   | Light freezing rain  | rain     | cloud with rain |
+| 67   | Heavy freezing rain  | rain     | cloud with rain |
 | 71   | Slight snow          | snow     | snowflake |
 | 73   | Moderate snow        | snow     | snowflake |
 | 75   | Heavy snow           | snow     | snowflake |
+| 77   | Snow grains          | snow     | snowflake |
 | 80   | Slight rain showers  | rain     | sun behind rain cloud |
 | 81   | Moderate rain showers| rain     | sun behind rain cloud |
 | 82   | Violent rain showers | rain     | cloud with lightning and rain |
