@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-terminal-weather`
 **Created**: 2026-02-14
-**Status**: Draft
+**Status**: Implemented
 **Input**: User description: "Go CLI tool for terminal weather display with emoji and ASCII art, using macOS CoreLocation with IP geolocation fallback and Open-Meteo API"
 
 ## User Scenarios & Testing *(mandatory)*
@@ -71,6 +71,22 @@ A user wants to see fewer or more forecast days. They use `--days 3` to see a sh
 
 ---
 
+### User Story 5 - Multi-Language Support (Priority: P3)
+
+A user who prefers a non-English language uses `--lang de` or relies on their system locale to see weather output in their language, including condition descriptions, UI labels, day abbreviations, and cardinal directions.
+
+**Why this priority**: Internationalization broadens the tool's audience beyond English speakers.
+
+**Independent Test**: Can be tested by running `goweather --lang de` and verifying that labels, condition descriptions, and day names appear in German.
+
+**Acceptance Scenarios**:
+
+1. **Given** a user with a German system locale, **When** they run `goweather`, **Then** the output uses German labels, day abbreviations, and weather descriptions.
+2. **Given** a user passes `--lang es`, **When** they run `goweather --lang es`, **Then** the output is in Spanish regardless of system locale.
+3. **Given** a user passes an unsupported language code, **When** they run `goweather --lang xx`, **Then** the tool falls back to English.
+
+---
+
 ### Edge Cases
 
 - What happens when the user is behind a VPN? IP geolocation may return incorrect location. The tool proceeds with the IP-based location; documentation notes users should use `--city` in this case.
@@ -97,13 +113,16 @@ A user wants to see fewer or more forecast days. They use `--days 3` to see a sh
 - **FR-012**: System MUST support `--lat <float>` and `--lon <float>` flags for coordinate-based location, requiring both when either is provided.
 - **FR-013**: System MUST support `--days <n>` flag to control forecast range (1-7, default 5).
 - **FR-014**: System MUST produce a single self-contained binary with no runtime dependencies beyond macOS system frameworks.
+- **FR-015**: System MUST support `--lang <code>` flag for language selection (en, de, es, fr, it, zh), with automatic locale detection as the default.
+- **FR-016**: System MUST display translated weather condition descriptions, UI labels, day abbreviations, and cardinal directions when a non-English language is active.
 
 ### Key Entities
 
 - **Location**: Represents a geographic position with latitude, longitude, and display name (city/region). Can be sourced from CoreLocation, IP geolocation, or user input.
 - **CurrentWeather**: Current conditions snapshot including temperature, feels-like temperature, humidity, wind speed, wind direction, and weather condition code.
 - **DailyForecast**: A single day's forecast with date, high temperature, low temperature, and weather condition code.
-- **WeatherCondition**: A mapping from weather codes to human-readable descriptions, emoji, and ASCII art representations.
+- **WeatherData**: Bundles current conditions with the daily forecast and timezone.
+- **WeatherCondition**: A mapping from weather codes to human-readable descriptions, emoji, and category. ASCII art is resolved by category rather than stored per condition.
 
 ## Success Criteria *(mandatory)*
 
@@ -115,6 +134,7 @@ A user wants to see fewer or more forecast days. They use `--days 3` to see a sh
 - **SC-004**: Output renders correctly (no garbled characters, proper alignment) in Terminal.app and iTerm2 at 40-column minimum width.
 - **SC-005**: Output with `--no-color` flag contains zero ANSI escape sequences and can be redirected to a file without artifacts.
 - **SC-006**: All defined weather conditions (clear, cloudy, rain, snow, thunderstorm, fog, drizzle) have distinct ASCII art icons and emoji representations.
+- **SC-007**: Output language matches `--lang` flag or system locale, with English as the fallback for unsupported languages.
 
 ## Assumptions
 
@@ -138,4 +158,3 @@ A user wants to see fewer or more forecast days. They use `--days 3` to see a sh
 - Hourly forecast breakdown
 - Severe weather alerts or warnings
 - Interactive or TUI mode
-- Localization/internationalization of weather descriptions

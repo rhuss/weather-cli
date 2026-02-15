@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 )
 
 // Location represents a resolved geographic position.
@@ -61,12 +60,7 @@ func ResolveLocation(cfg Config) (Location, error) {
 		return loc, nil
 	}
 
-	return getIPLocation()
-}
-
-// getIPLocation uses ip-api.com to determine location from IP address.
-func getIPLocation() (Location, error) {
-	return fetchIPLocation("http://ip-api.com/json/", &http.Client{Timeout: 5 * time.Second})
+	return GetIPLocation()
 }
 
 func fetchIPLocation(url string, client *http.Client) (Location, error) {
