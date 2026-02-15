@@ -1,4 +1,4 @@
-BINARY_NAME=goweather
+BINARY_NAME=weather
 
 .PHONY: build test clean
 
