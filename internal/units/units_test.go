@@ -1,6 +1,13 @@
 package units
 
-import "testing"
+import (
+	"goweather/internal/i18n"
+	"testing"
+)
+
+func init() {
+	i18n.Init("en")
+}
 
 func TestTempUnit(t *testing.T) {
 	if got := TempUnit(false); got != "°C" {

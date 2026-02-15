@@ -1,10 +1,15 @@
 package display
 
 import (
+	"goweather/internal/i18n"
 	"goweather/internal/weather"
 	"strings"
 	"testing"
 )
+
+func init() {
+	i18n.Init("en")
+}
 
 func TestRenderWeatherCard(t *testing.T) {
 	data := &weather.WeatherData{

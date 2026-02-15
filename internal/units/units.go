@@ -1,6 +1,9 @@
 package units
 
-import "fmt"
+import (
+	"fmt"
+	"goweather/internal/i18n"
+)
 
 // TempUnit returns the temperature unit suffix.
 func TempUnit(imperial bool) string {
@@ -25,8 +28,6 @@ func FormatTemp(temp float64, imperial bool) string {
 
 // WindCardinal converts wind direction degrees to a cardinal direction.
 func WindCardinal(degrees int) string {
-	dirs := []string{"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
-		"S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"}
 	idx := ((degrees + 11) / 22) % 16
-	return dirs[idx]
+	return i18n.Cardinal(idx)
 }

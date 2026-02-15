@@ -1,0 +1,34 @@
+package i18n
+
+func init() {
+	register(&Lang{
+		Code:          "de",
+		LabelDay:      "Tag",
+		LabelHi:       "Max",
+		LabelLo:       "Min",
+		LabelCond:     "Wetter",
+		LabelHumidity: "Feuchte:",
+		LabelWind:     "Wind:",
+		LabelFeels:    "gefühlt",
+		DayAbbreviations: [7]string{
+			"So", "Mo", "Di", "Mi", "Do", "Fr", "Sa",
+		},
+		Cardinals: [16]string{
+			"N", "NNO", "NO", "ONO", "O", "OSO", "SO", "SSO",
+			"S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
+		},
+		Conditions: map[int]string{
+			0: "Klarer Himmel", 1: "Überwiegend klar", 2: "Teilweise bewölkt", 3: "Bedeckt",
+			45: "Nebel", 48: "Reifnebel",
+			51: "Leichter Nieselregen", 53: "Mäßiger Nieselregen", 55: "Starker Nieselregen",
+			56: "Leichter gefrierender Nieselregen", 57: "Starker gefrierender Nieselregen",
+			61: "Leichter Regen", 63: "Mäßiger Regen", 65: "Starker Regen",
+			66: "Leichter gefrierender Regen", 67: "Starker gefrierender Regen",
+			71: "Leichter Schneefall", 73: "Mäßiger Schneefall", 75: "Starker Schneefall", 77: "Schneegriesel",
+			80: "Leichte Regenschauer", 81: "Mäßige Regenschauer", 82: "Heftige Regenschauer",
+			85: "Leichte Schneeschauer", 86: "Starke Schneeschauer",
+			95: "Gewitter", 96: "Gewitter mit leichtem Hagel", 99: "Gewitter mit starkem Hagel",
+		},
+		TipManualLocation: "Tipp: Verwenden Sie --city oder --lat/--lon, um einen Ort manuell anzugeben",
+	})
+}
